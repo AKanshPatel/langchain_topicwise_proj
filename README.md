@@ -7,7 +7,9 @@ Lang Chain is a open source framework for building application powered by LLMs.
 - **Def:** Core Interface through which application interact with AI (LLMs).
 - Different API -> Different Interface/Code
 - **Standard Interface and code.** 
-![Architecture Diagram](assets\LangChain_model.png)
+<!-- ![Architecture Diagram](assets\LangChain_model.png) -->
+<img src="assets\LangChain_model.png" width="700">
+
 
 #### Code: 
 1. Closed Source LLMs: 
@@ -33,7 +35,10 @@ Lang Chain is a open source framework for building application powered by LLMs.
 - Topics: 
 	- Messages - **SystemMessage, AImessage, HumanMessage.**
 
-![Prompts Langchain](assets\LangChain_prompts.png)
+<!-- ![Prompts Langchain](assets\LangChain_prompts.png) -->
+
+<img src="assets\LangChain_prompts.png" width="700">
+
 
 #### Code : 
 1. Create Template using **PromptTemplate()**
@@ -65,7 +70,8 @@ Lang Chain is a open source framework for building application powered by LLMs.
 Help to convert **raw LLM responses** into **structured format** like JSON, CSV, Pydantic model, and more.  
 1 **StrOutput parser:**  Output --> String
 
-![Output Langchain](assets\LangChain_output_str.png)
+<!-- ![Output Langchain](assets\LangChain_output_str.png) -->
+<img src="assets\LangChain_output_str.png" width="700">
 
 ### Chains: 
 - Application is made up of small small steps
