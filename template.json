@@ -1,0 +1,16 @@
+{
+    "name": null,
+    "input_variables": [
+        "lengh_input",
+        "paper_input"
+    ],
+    "optional_variables": [],
+    "output_parser": null,
+    "partial_variables": {},
+    "metadata": null,
+    "tags": null,
+    "template": " Summarize the paper named as {paper_input}, \n        length of the summzary should be {lengh_input}\n        ",
+    "template_format": "f-string",
+    "validate_template": true,
+    "_type": "prompt"
+}
