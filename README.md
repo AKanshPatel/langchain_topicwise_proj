@@ -77,3 +77,39 @@ Help to convert **raw LLM responses** into **structured format** like JSON, CSV,
 - Application is made up of small small steps
 - Executing them individually is lengthy and time consuming. 
 - Through chains we can create pipelines. 
+
+#### Code: 
+1. Create chain using LCEL(langchain expression language) 
+2. Only give input to the first component of the chain. 
+3. Will get the output from the last component of chain. 
+4. Types of Chain: 
+	1. **Sequential Chain** - Simple chain. 
+	2. **Parallel Chain** - "RunnableParallel"
+	3. **Conditional Chain** - "RunnableBranch" , "RunnableLambda"
+
+### Runnables: 
+
+Why Runnables:
+There are several components present in langchain and they contain different methods, such as : 
+1. prompt -> Format 
+2. LLMs -> predict
+3. Parser -> prase
+4. retrival -> get_relevant_document.
+
+**Need of Standard methods for all the components**
+
+- Unit of work -> Each runnable has its own purpose
+- Runnable : input -> Process -> output
+- Common Interface: invoke(), batch(), stream()
+- Since the runnable has common interface they can be connected. 
+- When we combine multiple runnables then the combined version is also a runnable. 
+
+Types of Runnables: 
+1. Task Specific - Core component 
+2. Runnable Primitives - Use to connect different task specific runnables, Orchestrate execution.: 
+	1. RunnableSequence - Sequential chain for runnables
+	2. RunnableParallel - Allows multiple runnable to execute in parallel. Single input and produce dictionary of outputs.
+3. RunnablePassThrough - It is a special runnable primitive that simply returns the input as output without modifying it. *If you want to get the intermediate results/responses.*
+4. RunnableLambda - Python function can be converted into runnable so that it can be applied to any pipeline. 
+5. RunnableBranch - It is a control flow component of langChain taht allows you to conditionally route input data to different chains or runnable based on customer logic. Similar to If/else/elif. **Pass tuples inside RunnbaleBranch**.
+6. LCEL - Runnable() --> | (pipe operator). 
