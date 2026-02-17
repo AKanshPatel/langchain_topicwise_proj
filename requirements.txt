@@ -1,6 +1,7 @@
 # LangChain Core
 langchain
 langchain-core
+langchain-community
 
 # OpenAI Integration
 langchain-openai
@@ -37,3 +38,6 @@ pydantic[email]
 
 # Chain graph
 grandalf
+
+# Pdf reader 
+pypdf
