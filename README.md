@@ -1,115 +1,143 @@
-Lang Chain is a open source framework for building application powered by LLMs. 
+# LangChain
 
-## Lang Chain Components:
-### Model: 
-- **Why:** Since there are many LLMs available and each of them provide slightly different API structure for calling. **No standard way of APIs**
-- **Solution:** Common/Standard Interface. 
-- **Def:** Core Interface through which application interact with AI (LLMs).
-- Different API -> Different Interface/Code
-- **Standard Interface and code.** 
-<!-- ![Architecture Diagram](assets\LangChain_model.png) -->
-<img src="assets\LangChain_model.png" width="700">
+LangChain is an open-source framework for building applications powered by Large Language Models (LLMs).
 
+---
 
-#### Code: 
-1. Closed Source LLMs: 
-	1. API keys (load_dotenv). 
-	2. Initialization (Use prebuild class in langchain). 
-	3. Invoke
-	4. Response.content 
-2. Hugging face Open Source models - Locally run or using API
-	1. API key (load_dotenv).
-	2. Hugging Face interface - HuggingFaceEndpoint
-	3. Initialize the model - ChatHuggingFace
-	4. Invoke
-	5. Response
+## LangChain Components
 
-### Prompt: 
-- Prompt Template: 
-	- A **PromptTemplate** in LangChain is a structured way to create prompts dynamically by inserting variables into predefined templates, Instead of hardcoding prompts. 
-	- PromptTemplate allows you to define placeholder that can be filled in *runtime* with different input. 
-	- Why to use it: 
-		- Default validation 
-		- Reusable - Create separate python file for **PromptTemplate** and **save in json**
-		- LangChain Ecosystem - Can be used with **chains**
-- Topics: 
-	- Messages - **SystemMessage, AImessage, HumanMessage.**
+### 1. Model
+* **Why:** Since many LLMs are available and each provides a slightly different API structure for calling them, there is **no standard way of using APIs**.
+* **Solution:** A common, standard interface.
+* **Definition:** The core interface through which an application interacts with AI models (LLMs).
+  * *Different APIs $\rightarrow$ Different Interfaces/Code*
+  * *LangChain $\rightarrow$ Standard Interface and Code*
 
-<!-- ![Prompts Langchain](assets\LangChain_prompts.png) -->
+<img src="assets/LangChain_model.png" width="700" alt="LangChain Model Architecture">
 
-<img src="assets\LangChain_prompts.png" width="700">
+#### LangChain Providers: Direct vs. Cloud-Hosted
 
+1. **Direct (Native) Providers**
+   * **What it is:** You connect directly to the model creator's public API (e.g., OpenAI, Anthropic, Google AI Studio).
+   * **Key Features:**
+     * Simple API Key Auth
+     * Public Shared Endpoints
+     * Standard Model Names
 
-#### Code : 
-1. Create Template using **PromptTemplate()**
-2. Fill the placeholder using **template.invoke()**
-3. This two steps will first set the template along with the placeholders and invoke will give the prompt. 
-4. Pass the prompt to **model.invoke(prompt)**
+2. **Cloud-Hosted (Managed) Providers**
+   * **What it is:** You connect to models hosted inside your own enterprise cloud tenant (e.g., Azure OpenAI, AWS Bedrock, GCP Vertex AI).
+   * **Key Features:**
+     * Enterprise IAM & Identity Auth
+     * Private Endpoints & VNet Isolation
+     * Custom Resource Routing & Regions
 
-#### Why we need: 
-1. **PromptTemplates:** To make the prompt dynamic and also some extra features such as: Reuseable, Validation and Align with the langChain Ecosystem. 
-2. **ChatPromptTemplates**: To have a history of Chat, while specifying which message is sent by whom. 
-### Output Structure: 
-- System to system communication, useful in AI agents systems
--  **with_structured_output** ->Data format specify. Dataformats are: 
-	- TypeDict - help\suggest the datatype.
-	- Pydantic - Type Validation.
-	- json_schema
-1. Pydantic - 
-	1. Pydantic Normal - Inherit from **BaseModel**
-	2. Pydantic **Optional** with initialized value.
-	3. Coerce try to understand the datatype, and perform conversion if needed. 
-	4. Field Functions and Email_address validator
+3. **In a Nutshell**
+   Cloud-hosted models require extra setup parameters because they replace:
+   * **Simple Auth** $\rightarrow$ **Enterprise Authentication** (IAM roles, Entra ID, Service Accounts)
+   * **Public Routing** $\rightarrow$ **Private Routing** (Specific Cloud Regions, Project IDs, Endpoint URLs, and Deployment Names)
 
-#### Code : 
-- with_structured_output(**Dataformats**)
-- Data formats = TypedDict, Pydantic, Json
+#### Code Workflow
+1. **Closed-Source LLMs:**
+   1. Load API keys (`load_dotenv()`).
+   2. Initialize the model (using a prebuilt class in LangChain).
+   3. Call `invoke()`.
+   4. Access `response.content`.
+2. **Hugging Face Open-Source Models (Local or API):**
+   1. Load API key (`load_dotenv()`).
+   2. Set up the Hugging Face interface (`HuggingFaceEndpoint`).
+   3. Initialize the model (`ChatHuggingFace`).
+   4. Call `invoke()`.
+   5. Access the response.
 
+---
 
-### Output Parsers: 
-Help to convert **raw LLM responses** into **structured format** like JSON, CSV, Pydantic model, and more.  
-1 **StrOutput parser:**  Output --> String
+### 2. Prompt
+* **PromptTemplate:**
+  * A `PromptTemplate` in LangChain is a structured way to create prompts dynamically by inserting variables into predefined templates instead of hardcoding prompts.
+  * It allows you to define placeholders that are filled at *runtime* with different inputs.
+  * **Why use it:**
+    * Default validation
+    * **Reusable:** Create a separate Python file for `PromptTemplate` and save it in JSON.
+    * **LangChain Ecosystem:** Can be seamlessly integrated into **chains**.
+* **Message Types:** `SystemMessage`, `AIMessage`, `HumanMessage`
 
-<!-- ![Output Langchain](assets\LangChain_output_str.png) -->
-<img src="assets\LangChain_output_str.png" width="700">
+<img src="assets/LangChain_prompts.png" width="700" alt="LangChain Prompts">
 
-### Chains: 
-- Application is made up of small small steps
-- Executing them individually is lengthy and time consuming. 
-- Through chains we can create pipelines. 
+#### Code Workflow
+1. Create a template using `PromptTemplate()`.
+2. Fill the placeholders using `template.invoke()`. *(These two steps set the template with placeholders and generate the formatted prompt).*
+3. Pass the formatted prompt to `model.invoke(prompt)`.
 
-#### Code: 
-1. Create chain using LCEL(langchain expression language) 
-2. Only give input to the first component of the chain. 
-3. Will get the output from the last component of chain. 
-4. Types of Chain: 
-	1. **Sequential Chain** - Simple chain. 
-	2. **Parallel Chain** - "RunnableParallel"
-	3. **Conditional Chain** - "RunnableBranch" , "RunnableLambda"
+#### Summary: Why We Need Them
+1. **`PromptTemplate`:** Makes prompts dynamic while adding reusability, validation, and alignment with the LangChain ecosystem.
+2. **`ChatPromptTemplate`:** Maintains chat history while explicitly specifying which role sent each message.
 
-### Runnables: 
+---
 
-Why Runnables:
-There are several components present in langchain and they contain different methods, such as : 
-1. prompt -> Format 
-2. LLMs -> predict
-3. Parser -> prase
-4. retrival -> get_relevant_document.
+### 3. Output Structure
+* Used for system-to-system communication, which is essential in AI agent workflows.
+* **`with_structured_output()`:** Specifies the expected output data format. Supported formats include:
+  * **`TypedDict`:** Suggests/hints at the expected data types.
+  * **`Pydantic`:** Enforces strict type validation.
+  * **`json_schema`:** Defines structure using standard JSON Schema.
 
-**Need of Standard methods for all the components**
+#### Pydantic Features
+1. **Standard Pydantic:** Inherit from `BaseModel`.
+2. **Optional Fields:** Use `Optional` with default initialized values.
+3. **Type Coercion:** Automatically interprets input types and converts them when possible (e.g., `"123"` $\rightarrow$ `123`).
+4. **Validation & Constraints:** Supports `Field` functions and specialized validators (e.g., `EmailStr`).
 
-- Unit of work -> Each runnable has its own purpose
-- Runnable : input -> Process -> output
-- Common Interface: invoke(), batch(), stream()
-- Since the runnable has common interface they can be connected. 
-- When we combine multiple runnables then the combined version is also a runnable. 
+#### Code Workflow
+* Call `model.with_structured_output(DataFormat)` where `DataFormat` is a `TypedDict`, `Pydantic` model, or `JSON` schema.
 
-Types of Runnables: 
-1. Task Specific - Core component 
-2. Runnable Primitives - Use to connect different task specific runnables, Orchestrate execution.: 
-	1. RunnableSequence - Sequential chain for runnables
-	2. RunnableParallel - Allows multiple runnable to execute in parallel. Single input and produce dictionary of outputs.
-3. RunnablePassThrough - It is a special runnable primitive that simply returns the input as output without modifying it. *If you want to get the intermediate results/responses.*
-4. RunnableLambda - Python function can be converted into runnable so that it can be applied to any pipeline. 
-5. RunnableBranch - It is a control flow component of langChain taht allows you to conditionally route input data to different chains or runnable based on customer logic. Similar to If/else/elif. **Pass tuples inside RunnbaleBranch**.
-6. LCEL - Runnable() --> | (pipe operator). 
+---
+
+### 4. Output Parsers
+Output parsers help convert **raw LLM responses** into **structured formats** like strings, JSON, CSV, or Pydantic models.
+1. **`StrOutputParser`:** Converts LLM output $\rightarrow$ plain `String`.
+
+<img src="assets/LangChain_output_str.png" width="700" alt="LangChain Output Parser">
+
+---
+
+### 5. Chains
+* Applications are made up of multiple small steps.
+* Executing each step individually is lengthy and time-consuming.
+* **Chains** allow you to connect these steps into automated pipelines.
+
+#### Code Workflow & Types
+1. Create chains using **LCEL (LangChain Expression Language)**.
+2. Pass input **only** to the first component of the chain.
+3. Receive the final output from the last component of the chain.
+4. **Types of Chains:**
+   1. **Sequential Chain:** A simple linear pipeline.
+   2. **Parallel Chain:** Uses `RunnableParallel` to run steps simultaneously.
+   3. **Conditional Chain:** Uses `RunnableBranch` and `RunnableLambda` for branching logic.
+
+---
+
+### 6. Runnables
+
+#### Why Runnables?
+Different LangChain components historically used different method names:
+1. Prompts $\rightarrow$ `format()`
+2. LLMs $\rightarrow$ `predict()`
+3. Parsers $\rightarrow$ `parse()`
+4. Retrievers $\rightarrow$ `get_relevant_documents()`
+
+**Solution:** A standardized execution interface across all components.
+
+#### Core Concepts
+* **Unit of Work:** Each runnable has a specific purpose (`Input -> Process -> Output`).
+* **Common Interface:** Every runnable implements `invoke()`, `batch()`, and `stream()`.
+* **Composability:** Because all runnables share the same interface, they can be chained together—and the combined pipeline itself becomes a new runnable.
+
+#### Types of Runnables
+1. **Task-Specific Runnables:** Core components (Prompts, LLMs, Parsers, Retrievers).
+2. **Runnable Primitives:** Used to connect and orchestrate task-specific runnables:
+   1. **`RunnableSequence`:** Executes runnables sequentially in a chain.
+   2. **`RunnableParallel`:** Executes multiple runnables in parallel using a single input and returning a dictionary of outputs.
+   3. **`RunnablePassthrough`:** Passes the input through unchanged as output *(useful for preserving intermediate results/responses)*.
+   4. **`RunnableLambda`:** Converts any standard Python function into a runnable so it can be used inside a pipeline.
+   5. **`RunnableBranch`:** A control-flow component for conditional routing (similar to `if / elif / else`). **Pass `(condition, runnable)` tuples inside `RunnableBranch`.**
+   6. **LCEL (LangChain Expression Language):** Uses the `|` (pipe) operator to compose runnables cleanly (e.g., `prompt | model | parser`).
